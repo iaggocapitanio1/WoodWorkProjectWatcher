@@ -1,0 +1,53 @@
+2023-06-15 15:24:11,962 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/app/media/public/mofreitas
+2023-06-15 15:24:11,962 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/app/media/public/mofreitas
+2023-06-15 15:30:41,258 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/app/media/public/mofreitas
+2023-06-15 15:30:41,258 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/app/media/public/mofreitas
+2023-06-15 15:30:56,593 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media
+2023-06-15 15:30:56,593 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media
+2023-06-15 15:32:08,638 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:32:08,638 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:33:40,534 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:33:40,534 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:36:42,047 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:36:42,047 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:37:10,807 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:37:10,807 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:37:38,589 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:37:38,589 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:41:04,400 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:41:04,400 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:58:25,623 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 15:58:25,623 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 15:58:25,623 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 15:58:25,623 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 15:58:25,623 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 16:57:42,399 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 16:57:42,399 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 16:57:42,400 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 16:57:42,400 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 16:57:42,400 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 16:59:26,602 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 16:59:26,602 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 16:59:26,603 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 16:59:26,603 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 16:59:26,603 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:00:40,083 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:00:40,083 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:00:40,086 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 17:00:40,086 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:00:40,086 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:02:11,639 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:02:11,639 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:02:11,641 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 17:02:11,642 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:02:11,642 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:04:15,360 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:04:15,360 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:04:15,361 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 17:04:15,361 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:04:15,361 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:08:25,229 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:08:25,229 - level: INFO - loc: utilities.http - func: test_connection - msg: Connection succeeded.
+2023-06-15 17:08:25,230 - level: INFO - loc: __main__ - func: <module> - msg: Watching DIR: /home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas
+2023-06-15 17:08:25,230 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
+2023-06-15 17:08:25,230 - level: INFO - loc: utilities.handler - func: __init__ - msg: ------------- PROJECT WATCHER INITIALIZED -------------
