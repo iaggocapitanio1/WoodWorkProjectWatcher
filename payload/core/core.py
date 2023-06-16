@@ -11,10 +11,12 @@ class BasePayload(object):
     PROPS_TO_EXCLUDE: List[str] = ['context', 'headers', 'url', 'id', 'type', 'link_headers']
     GEO_PROPERTY: List[str] = []
     RELATIONAL_PROPS: List[str] = []
+    RESOURCE = 'part/'
 
     def __init__(self, **kwargs) -> None:
         self.headers = kwargs.get('headers', settings.HEADERS)
-        self.url = kwargs.get('url', settings.URL + "/ngsi-ld/v1/entities")
+        self.url = kwargs.get('url', settings.URL + self.RESOURCE)
+
         self.type = kwargs.get('type', 'Part')
         self.id = kwargs.get('id', None)
 
@@ -90,7 +92,10 @@ class BasePayload(object):
 
     def partial_body(self) -> dict:
         partial_body = dict()
-        actual = self.get(dict(options='keyValues')).json()
+        response: requests.Response = self.get(dict(options='keyValues'))
+        if response.status_code != 200:
+            raise Exception(f"Error while getting entity: {response.status_code}, {response.text}")
+        actual = self.get().json()
         for prop in self.clean_properties():
             value = getattr(self, prop)
             actual_value = actual.get(prop, None)

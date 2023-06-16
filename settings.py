@@ -13,7 +13,14 @@ def mega_bytes_to_bits(mega: int) -> int:
     return mega * 1024 * 1024
 
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent
+
+PRODUCTION = False
+
+if not PRODUCTION:
+    load_dotenv(BASE_DIR.joinpath('.dev.env'))
+else:
+    load_dotenv()
 
 NAMESPACE = 'PROJECT_WATCHER'
 
@@ -24,8 +31,6 @@ if NAMESPACE:
 def parse_env(string: str) -> str:
     return NAMESPACE + string
 
-
-BASE_DIR = Path(__file__).resolve().parent
 
 DELAY_FOR_SCAN = 30
 
@@ -45,7 +50,9 @@ WATCHING_DIR = os.environ.get(parse_env("WATCHING_DIR"), BASE_DIR / '/home/app/m
 
 WATCHING_DIR = Path(WATCHING_DIR).resolve()
 
-NGSI_LD_CONTEXT = os.environ.get(parse_env("NGSI_LD_CONTEXT"), False)
+NGSI_LD_CONTEXT = os.environ.get(parse_env("NGSI_LD_CONTEXT"),
+                                 "https://raw.githubusercontent.com/More-Collaborative-Laboratory/ww4zero/main/context/"
+                                 "ww4zero.context-ngsi.jsonld")
 
 CUT_LIST_DIR = "Listas de Corte e Etiquetas"
 

@@ -105,11 +105,4 @@ def get_data_frame(path: str, sheet_name: Literal['panels', 'compact-panels', 'a
     return get_valid_table(data_frame=data_frame, column_name=0)
 
 
-def generate_payload(path: str, belongs_to: str, orderBy: str) -> None:
-    logger.info("Extracting data from dataframes!")
-    panels_df = get_data_frame(sheet_name="panels", path=path)
-    part_panels_payload(data_frame=panels_df, belongs_to=belongs_to, orderBy=orderBy)
-    compact_panels_df = self.get_data_frame(sheet_name="compact-panels", path=path)
-    part_compact_panels_payload(data_frame=compact_panels_df, belongs_to=belongs_to, orderBy=orderBy)
-    accessories_df = self.get_data_frame(sheet_name="accessories", path=path)
-    consumable_accessories_payload(data_frame=accessories_df, belongs_to=belongs_to)
+
