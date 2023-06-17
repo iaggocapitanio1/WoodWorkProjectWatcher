@@ -3,7 +3,7 @@ from .core.core import BasePayload
 
 # noinspection PyPep8Naming
 class PartPayload(BasePayload):
-    RELATIONAL_PROPS = ['belongsTo', 'belongsToFurniture', ]
+    RELATIONAL_PROPS = ['belongsTo', 'belongsToFurniture', 'belongsToModule']
     GEO_PROPERTY = ["dimensions"]
 
     def __init__(self, **kwargs):
@@ -33,7 +33,16 @@ class PartPayload(BasePayload):
         self.image = kwargs.get("image", "")
         self.belongsTo = kwargs.get("belongsTo", "")
         self.belongsToFurniture = kwargs.get("belongsToFurniture", "")
+        self.belongsToModule = kwargs.get("belongsToModule", "")
         self.tupia = kwargs.get("tupia", "")
+
+    @property
+    def belongsToModule(self) -> str:
+        return self._belongsToModule
+
+    @belongsToModule.setter
+    def belongsToModule(self, belongsToModule: str) -> None:
+        self._belongsToModule = belongsToModule
 
     @property
     def belongsTo(self) -> str:

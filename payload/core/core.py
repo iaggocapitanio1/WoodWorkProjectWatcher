@@ -14,13 +14,15 @@ class BasePayload(object):
     RESOURCE = 'part/'
 
     def __init__(self, **kwargs) -> None:
-        self.headers = kwargs.get('headers', settings.HEADERS)
+        self.session = requests.Session()
+        self.session.headers = kwargs.get('headers', settings.HEADERS)
+        self.session.auth = oauth
         self.url = kwargs.get('url', settings.URL + self.RESOURCE)
-
         self.type = kwargs.get('type', 'Part')
         self.id = kwargs.get('id', None)
 
-    def validate_props(self, props: list) -> List:
+    @staticmethod
+    def validate_props(props: list) -> List:
         return props
 
     @functools.cache
@@ -50,14 +52,6 @@ class BasePayload(object):
     @type.setter
     def type(self, _type) -> None:
         self._type = _type
-
-    @property
-    def headers(self) -> Dict[str, str]:
-        return self._headers
-
-    @headers.setter
-    def headers(self, headers: Dict[str, str]) -> None:
-        self._headers = headers
 
     @property
     def url(self) -> str:
@@ -110,7 +104,7 @@ class BasePayload(object):
         return json.dumps(self.partial_body())
 
     def post(self):
-        return requests.post(self.url, self.json(), auth=oauth, headers=self.headers)
+        return self.session.post(self.url, self.json())
 
     def url_with_pk(self):
         if self.url.endswith('/'):
@@ -120,14 +114,13 @@ class BasePayload(object):
     def get(self, params=None):
         if not params:
             params = {}
-        return requests.get(self.url_with_pk(), headers=self.headers, auth=oauth, params=params)
+        return self.session.get(self.url_with_pk(), params=params)
 
     def patch(self, params=None):
-        return requests.patch(self.url_with_pk() + 'attrs/', self.partial_json(), auth=oauth, headers=self.headers,
-                              params=params)
+        return self.session.patch(self.url_with_pk(), self.partial_json(),  params=params)
 
     def delete(self):
-        return requests.delete(self.url_with_pk(), auth=oauth, headers=self.headers)
+        return self.session.delete(self.url_with_pk())
 
     def list(self, params=None):
-        return requests.get(self.url, auth=oauth, headers=self.headers, params=params)
+        return self.session.get(self.url, params=params)

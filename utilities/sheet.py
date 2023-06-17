@@ -2,7 +2,7 @@ import logging
 from typing import Union, Literal, Optional, Sequence
 
 from pandas import DataFrame, read_excel
-
+from pathlib import Path
 import settings
 
 logger = logging.getLogger(__name__)
@@ -76,7 +76,7 @@ def get_valid_table(data_frame: DataFrame, column_name: Union[str, int] = 'REF P
     return data_frame.dropna(axis=0, subset=[column_name]).fillna('')
 
 
-def get_data_frame(path: str, sheet_name: Literal['panels', 'compact-panels', 'accessories']) -> Optional[DataFrame]:
+def get_data_frame(path: str | Path, sheet_name: Literal['panels', 'compact-panels', 'accessories']) -> Optional[DataFrame]:
     """
     Reads an Excel file and returns a cleaned DataFrame with valid data.
 
@@ -96,13 +96,15 @@ def get_data_frame(path: str, sheet_name: Literal['panels', 'compact-panels', 'a
     if sheet is None:
         logger.error(f"Invalid sheet name: {sheet_name}")
         return None
+    try:
+        if columns is not None:
+            data_frame = read_excel(path, sheet, header=0, usecols=columns,  engine="openpyxl")
+        else:
+            data_frame = read_excel(path, sheet, header=0,  engine="openpyxl")
 
-    if columns is not None:
-        data_frame = read_excel(path, sheet, header=0, usecols=columns)
-    else:
-        data_frame = read_excel(path, sheet, header=0)
-
-    return get_valid_table(data_frame=data_frame, column_name=0)
-
+        return get_valid_table(data_frame=data_frame, column_name=0,)
+    except Exception as e:
+        logger.error(f"Error reading Excel file: {e}")
+        return None
 
 

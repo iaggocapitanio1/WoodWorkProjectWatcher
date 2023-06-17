@@ -14,6 +14,19 @@ logger = logging.getLogger(__name__)
 
 
 def worker(event_queue):
+    """
+    Worker function that processes events from the event queue.
+
+    This function continuously retrieves events from the event queue and processes them using the `task.process_event`
+    method. The function breaks the loop and terminates when a `None` value is encountered in the event queue.
+
+    Args:
+        event_queue (queue.Queue): The queue from which events are retrieved.
+
+    Returns:
+        None
+
+    """
     while True:
         event_tuple = event_queue.get()
         if event_tuple is None:
@@ -23,6 +36,20 @@ def worker(event_queue):
 
 
 def delayed_scan_worker(event_queue, delayed_scan_queue, directories_in_queue):
+    """
+    Verifies if the given source path contains the specified reference as one of its parts and
+    if it is not a directory.
+
+    This function takes the following parameters:
+
+    :param event_queue: A queue.Queue object representing the queue to which scan events are added.
+    :param delayed_scan_queue: A queue.Queue object representing the queue from which directories scheduled for delayed
+    scanning are retrieved.
+    :param directories_in_queue: A list containing the directories currently in the queue.
+
+    This function does not return a value.
+
+    """
     directory_timestamps = {}
 
     while True:
@@ -83,7 +110,7 @@ class ExcelEventHandler(PatternMatchingEventHandler):
         path: Path = self.parse_path(path)
         if path.is_dir():
             return False
-        return path.parent.__str__() == settings.CUT_LIST_DIR and path.parent.parent.__str__() == 'briefing'
+        return path.parent.stem.__str__() == settings.CUT_LIST_DIR and path.parent.parent.stem.__str__() == 'briefing'
 
     @functools.cache
     def add_to_event_queue(self, event):
@@ -118,8 +145,8 @@ class ExcelEventHandler(PatternMatchingEventHandler):
     def on_moved(self, event):
         self.add_to_queue(event, msg=f"'Moved' event triggered for 'file':")
 
-    def on_deleted(self, event):
-        self.add_to_queue(event, msg="'Deleted' event triggered for 'file':")
+    # def on_deleted(self, event):
+    #     self.add_to_queue(event, msg="'Deleted' event triggered for 'file':")
 
     def scan_directory(self, directory):
         for root, dirs, files in os.walk(directory):

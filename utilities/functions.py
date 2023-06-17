@@ -1,10 +1,11 @@
 import datetime
+import functools
 import logging
 from pathlib import Path
 from typing import Union, Optional, List
-import functools
+import re
 from pandas import DataFrame
-from utilities.sheet import get_data_frame
+
 import settings
 from payload import ConsumablePayload
 from payload import PartPayload
@@ -16,6 +17,14 @@ def validate_path(path: Union[str, Path]) -> Path:
     if isinstance(path, str):
         path = Path(path)
     return path.resolve()
+
+
+def clean_name(name: str) -> str:
+    return re.sub(r'[^\w]', '_', name)
+
+
+def get_furniture_name(file: str, budget_name: str) -> str:
+    return file.replace(budget_name.upper().strip(), '').replace(' ', '').strip('_')
 
 
 def verify(source_path: Path) -> bool:
@@ -72,14 +81,23 @@ def check(string: str) -> bool:
 
 
 def send_payload(payload):
-    logger.info("Trying to post payload...")
-    response = payload.post()
-    logger.info(f"Response Status Code: {response.status_code}")
-    print(response.status_code, response.json())
-    # if response.status_code != 201:
-    #     logger.info("Trying to patch payload...")
-    #     response = payload.patch()
-    #     logger.debug(f"Response Status Code: {response.status_code}")
+    try:
+        logger.info("Trying to post payload...")
+        response = payload.post()
+        logger.info(f"Response Status Code: {response.status_code}")
+        logger.info(response.status_code, response.json())
+        if response.status_code == 409:
+            logger.info("Trying to patch payload...")
+            response = payload.patch()
+            logger.info(f"Response Status Code: {response.status_code}")
+    except Exception as error:
+        logger.error(f"Error: Unable to send payload. {error}")
+
+
+@functools.cache
+def get_module(name: str, furnishing: str, project: str) -> str:
+    module: str = name.replace(project, "").replace(furnishing, "").split("_")[0]
+    return generate_id(module, object_type='Module')
 
 
 @functools.cache
@@ -91,27 +109,38 @@ def generate_dimensions(coordinates: List[List[int]] = None) -> dict:
 
 def process_row(name, payload_cls, belongs_to, **kwargs):
     object_type = kwargs.get("object_type", "Part")
-    identifier = generate_id(name, object_type=object_type)
+    identifier = generate_id(clean_name(name), object_type=object_type)
     payload = payload_cls(id=identifier, belongsTo=belongs_to, **kwargs)
     send_payload(payload)
 
 
 def consumable_accessories_payload(data_frame: DataFrame, belongs_to: str, **kwargs):
     observed_at = kwargs.get("observed_at", datetime.datetime.utcnow().isoformat())
+    if data_frame is None:
+        return
     for _, row in data_frame.iterrows():
         name, mat, quant, obs = row
         process_row(name, ConsumablePayload, belongs_to, name=name, amount=quant, status=0, object_type='Consumable')
 
 
-def part_compact_panels_payload(data_frame: DataFrame, belongs_to: str, **kwargs):
+def part_compact_panels_payload(data_frame: DataFrame, belongs_to: str, belongs_to_furniture: str, **kwargs):
+    furn = belongs_to_furniture.split(':')[-1]
+    proj = belongs_to.split(':')[-1]
+    if data_frame is None:
+        return
     for _, row in data_frame.iterrows():
         name, mat, quant, length, width, thickness, tag, nesting, cnc, f2, f3, f4, f5, obs = row
         process_row(name, PartPayload, belongs_to, partName=name, material=mat, amount=quant, length=length,
                     weight=width, dimensions=generate_dimensions(), thickness=thickness, tag=tag, cncFlag=check(cnc),
-                    nestingFlag=check(nesting), f2=f2, f3=f3, f4=f4, f5=f5, observation=obs)
+                    nestingFlag=check(nesting), f2=f2, f3=f3, f4=f4, f5=f5, observation=obs,
+                    belongsToModule=get_module(name, furn, proj), belongsToFurniture=belongs_to_furniture)
 
 
 def part_panels_payload(data_frame: DataFrame, belongs_to: str, belongs_to_furniture: str, **kwargs):
+    furn = belongs_to_furniture.split(':')[-1]
+    proj = belongs_to.split(':')[-1]
+    if data_frame is None:
+        return
     for _, row in data_frame.iterrows():
         name, sort, mat, quant, length, width, thickness, tag, nesting, cnc, f2, f3, f4, f5, groove, o2, o3, o4, o5, \
             obs, weight, op_cnc = row
@@ -119,18 +148,4 @@ def part_panels_payload(data_frame: DataFrame, belongs_to: str, belongs_to_furni
                     width=width, weight=weight, dimensions=generate_dimensions(), thickness=thickness, tag=tag,
                     nestingFlag=check(nesting), cncFlag=check(cnc), f2=f2, f3=f3, f4=f4, f5=f5, groove=groove,
                     belongsToFurniture=belongs_to_furniture, orla2=check(o2), orla3=check(o3), orla4=check(o4),
-                    orla5=check(o5), observation=obs)
-
-
-if __name__ == "__main__":
-    print("This module is not meant to be executed directly.")
-    path = "/home/iaggo/Documents/Eins/WoodWorkProjectWatcher/media/public/mofreitas/clientes/iaggo.capitanio@gmail.com/Chanut/briefing/Listas de Corte e Etiquetas/CHANUT_BAR.xlsx"
-    file_path = validate_path(path)
-    if verify(source_path=file_path):
-        file_name = file_path.stem.upper().strip()
-        budget = get_budget_name(path)
-        furniture = file_name.replace(budget.upper().strip(), '').replace(' ', '').strip('_')
-        project_id = generate_id(name=budget, object_type='Project')
-        furniture_id = generate_id(name=furniture, object_type='Furniture')
-        panels_dataframe = get_data_frame(sheet_name="panels", path=path)
-        part_panels_payload(data_frame=panels_dataframe, belongs_to=project_id, belongs_to_furniture=furniture_id)
+                    orla5=check(o5), observation=obs, belongsToModule=get_module(name, furn, proj))

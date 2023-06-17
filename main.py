@@ -6,7 +6,7 @@ import time
 from watchdog.observers import Observer
 
 import settings
-from utilities import http-requests, handler
+from utilities import http_request as http, handler
 
 logging.config.dictConfig(settings.LOGGER)
 logger = logging.getLogger(__name__)
