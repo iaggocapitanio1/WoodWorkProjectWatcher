@@ -11,8 +11,6 @@ from utilities import http_request as http, handler
 logging.config.dictConfig(settings.LOGGER)
 logger = logging.getLogger(__name__)
 
-SLEEP_DURATION = 0.7
-
 if __name__ == "__main__":
     # Queues and Sets
     event_queue = queue.Queue()
@@ -39,7 +37,7 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep(SLEEP_DURATION)
+            time.sleep(settings.SLEEP_DURATION)
     except KeyboardInterrupt:
         observer.stop()
     observer.join()

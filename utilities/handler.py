@@ -1,8 +1,11 @@
 import functools
-import os
-from pathlib import Path
 import logging.config
+import os
 import time
+from pathlib import Path
+from queue import Queue
+from typing import Iterator
+
 from watchdog.events import FileCreatedEvent
 from watchdog.events import PatternMatchingEventHandler
 
@@ -35,7 +38,7 @@ def worker(event_queue):
         task.process_event(event_type, event)
 
 
-def delayed_scan_worker(event_queue, delayed_scan_queue, directories_in_queue):
+def delayed_scan_worker(event_queue: Queue, delayed_scan_queue: Queue, directories_in_queue: set):
     """
     Verifies if the given source path contains the specified reference as one of its parts and
     if it is not a directory.
@@ -58,23 +61,19 @@ def delayed_scan_worker(event_queue, delayed_scan_queue, directories_in_queue):
             break
 
         current_time = time.time()
+        if directory not in directory_timestamps:
+            directory_timestamps[directory] = current_time
+            directories_in_queue.add(directory)
 
-        missing_time: float = current_time - directory_timestamps[directory]
+        elapsed_time = current_time - directory_timestamps[directory]
+        remaining_delay = max(0, settings.DELAY_FOR_SCAN - elapsed_time)
+        time.sleep(remaining_delay)
 
-        # If the directory is already scheduled for scanning, skip this iteration
-        if directory in directory_timestamps and missing_time < settings.DELAY_FOR_SCAN:
-            continue
+        ExcelEventHandler(event_queue, delayed_scan_queue, directories_in_queue).scan_directory(directory)
 
-        # Otherwise, update the time it was added to the queue
-        directory_timestamps[directory] = current_time
-
-        # Wait 30 seconds
-        time.sleep(settings.DELAY_FOR_SCAN)
-
-        # Check if 30 seconds have passed since the directory was first added to the queue
-        if time.time() - directory_timestamps[directory] >= settings.DELAY_FOR_SCAN:
-            ExcelEventHandler(event_queue, delayed_scan_queue, directories_in_queue).scan_directory(directory)
-            directories_in_queue.remove(directory)
+        # Remove the directory from the set and timestamp dictionary
+        directories_in_queue.remove(directory)
+        del directory_timestamps[directory]
 
 
 class ExcelEventHandler(PatternMatchingEventHandler):
@@ -91,12 +90,15 @@ class ExcelEventHandler(PatternMatchingEventHandler):
         observer.start()
     """
 
-    def __init__(self, event_queue, delayed_scan_queue, directories_in_queue, *args, **kwargs):
+    def __init__(self, event_queue: Queue, delayed_scan_queue: Queue,
+                 directories_in_queue: Queue | set | list | Iterator,
+                 process_scan: bool = False, *args, **kwargs) -> None:
         patterns = ['*.xlsx']
         super().__init__(patterns=patterns, ignore_directories=True, case_sensitive=False)
         self.event_queue = event_queue
         self.delayed_scan_queue = delayed_scan_queue
         self.directories_in_queue = directories_in_queue
+        self.process_scan = process_scan
 
         logger.info(f"------------- PROJECT WATCHER INITIALIZED -------------")
 
@@ -112,16 +114,14 @@ class ExcelEventHandler(PatternMatchingEventHandler):
             return False
         return path.parent.stem.__str__() == settings.CUT_LIST_DIR and path.parent.parent.stem.__str__() == 'briefing'
 
-    @functools.cache
     def add_to_event_queue(self, event):
         logger.info(f"Adding to queue for processing.")
         self.event_queue.put(('created', event))
 
-    @functools.cache
     def add_to_dir_queue(self, path: Path):
         if not path.is_dir():
             path = path.parent
-        if path in self.directories_in_queue:
+        if path not in self.directories_in_queue:
             self.directories_in_queue.add(path)
             self.delayed_scan_queue.put(path)
 
@@ -133,8 +133,9 @@ class ExcelEventHandler(PatternMatchingEventHandler):
         msg += f" {event.src_path}"
         if self.is_valid_path(event.src_path):
             logger.info(msg)
-            self.add_to_event_queue(event)
             self.add_to_dir_queue(dir_path)
+            if self.process_scan:
+                self.add_to_event_queue(event)
 
     def on_modified(self, event):
         self.add_to_queue(event)
@@ -144,9 +145,6 @@ class ExcelEventHandler(PatternMatchingEventHandler):
 
     def on_moved(self, event):
         self.add_to_queue(event, msg=f"'Moved' event triggered for 'file':")
-
-    # def on_deleted(self, event):
-    #     self.add_to_queue(event, msg="'Deleted' event triggered for 'file':")
 
     def scan_directory(self, directory):
         for root, dirs, files in os.walk(directory):

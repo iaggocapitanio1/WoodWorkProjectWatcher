@@ -32,7 +32,9 @@ def parse_env(string: str) -> str:
     return NAMESPACE + string
 
 
-DELAY_FOR_SCAN = 30
+DELAY_FOR_SCAN = int(os.environ.get(parse_env("DELAY_FOR_SCAN"), 20))
+
+SLEEP_DURATION = int(os.environ.get(parse_env("DELAY_FOR_SCAN"), 0.3))
 
 NUM_WORKER_THREADS = int(os.environ.get(parse_env("NUM_WORKER_THREADS"), 4))
 
